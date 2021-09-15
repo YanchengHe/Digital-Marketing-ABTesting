@@ -1,0 +1,48 @@
+GitHub
+	-- Clone: git clone
+	-- Basic commands: add, commit -m, push, branch, status, checkout, pull, fetch
+
+
+Four key GitHub commands
+# getting setup
+-- git clone
+
+Doing a push
+-- git status
+-- git add .
+-- git commit -m "message here"
+-- git push
+
+
+Check Python version
+~: python -V
+~/: python3 -V
+pip list
+
+Open PyCharm (use default compiler for now)
+1. Console, terminal
+2. print hello world from both + terminal in native Mac
+3. cmd + shift + E to run line by line
+4. file I/O and directory structure for project (create hello world file in sublime)
+	-- pickle
+	-- json
+5. pandas
+	install pandas using pip3
+	import pandas
+	what is a data frame? What is a series?
+	shape, head
+	slices - rows and columns
+	column-wise operations: sum, creating a new column
+	datetime
+	I/O
+	apply
+	groupie
+
+VirtualEnv
+	-- Create and activate
+
+Steps for new project
+1. create github repo via web GUI
+2. clone environment in to hard drive folder
+3. create virtual environment (optional)
+4. create new pycharm project
