@@ -6,9 +6,10 @@ project's interpreter using "conda install [package]" or "pip install [package]"
 Much of the code has been provided, but several lines or functions require completion for the assignment. These lines
 and associated comments/hints can be found by searching for the string "#####".
 '''
+import math
 
-import numpy as np
 import pandas as pd
+import numpy as np
 from scipy.stats import norm
 import datetime
 
@@ -22,17 +23,23 @@ def calc_proportion(array_TF):
 
 
 def calc_zscore(phat, p, n_f):
-    z_score_f = None    ##### Replace None with formula
+    z_score_f = (phat - p)/ math.sqrt(p*(1-p)/n_f)    ##### Replace None with formula
     return z_score_f
 
 
 def get_z_crit_value(alpha_f, num_sides_f):
-    z_crit_value_f = None   ##### Replace None with formula; hint: use norm.ppf package
+    if num_sides_f == 2:
+        z_crit_value_f = norm.ppf(1-(alpha_f/2))   ##### Replace None with formula; hint: use norm.ppf package
+    elif num_sides_f == 1:
+        z_crit_value_f = norm.ppf(1 - alpha_f)
+    else:
+        return 'Something wrong'
+
     return z_crit_value_f
 
 
 def get_p_value(zscore_f, num_sides_f):
-    p_value_f = None   ##### Replace None with formula; hint: use norm.cdf package
+    p_value_f = (1-norm.cdf(zscore_f)) * num_sides_f   ##### Replace None with formula; hint: use norm.cdf package
     return p_value_f
 
 
@@ -43,7 +50,11 @@ def reject_null(variantA_outcomes_f, variantB_outcomes_f, alpha_f, num_sides_f):
     z_score = calc_zscore(p_hat_f, p_f, n_f)
     p_value = get_p_value(z_score, num_sides_f)
     z_crit = get_z_crit_value(alpha_f, num_sides_f)
-    reject_null_TF_f = None     ##### Replace None with formula. This should result in a boolean variable (True or False). You can check the variable type in the console with the command: "type(reject_null_TF_f)"
+    if z_score >= z_crit:
+        reject_null_TF_f = True     ##### Replace None with formula. This should result in a boolean variable (True or False). You can check the variable type in the console with the command: "type(reject_null_TF_f)"
+    else:
+        reject_null_TF_f = False
+
     return reject_null_TF_f, z_score, p_value
 
 
@@ -52,7 +63,8 @@ def calc_optimal_sample_size(p0_f, mde_f, alpha_f, power_f):
     t_beta = abs(norm.ppf(1-power_f))
     p1_f = p0_f + mde_f
     p_avg = (p0_f + (p0_f + mde_f))/2
-    sample_size = None  ##### Replace None with formula
+    ##### Replace None with formula
+    sample_size = (t_alpha2 * math.sqrt(2*p_avg*(1-p_avg))+t_beta * math.sqrt(p0_f*(1-p0_f)+p1_f*(1-p1_f)))**2/mde_f**2
     return sample_size
 
 
@@ -123,12 +135,15 @@ reject_null_list = list()   # this will store the results of the significance te
 z_score_list = list()   # this still store the z-scores from each test
 p_value_list = list()   # this will store the p-values from each test
 for i in range(0, num_samples):
-    t_perc_of_trial_data_to_use = None  ##### Replace None with the formula for what percent of the trial data should be used
+    t_perc_of_trial_data_to_use = n_star/variantB_outcomes.shape[0] ##### Replace None with the formula for what percent of the trial data should be used
     t_sample = variantB_outcomes.sample(frac=min(t_perc_of_trial_data_to_use, 1))   ##### No changes needed, but think about why we're using a min() function here
     t_reject, t_z_score, t_p_value = reject_null(variantA_outcomes, t_sample, alpha, num_sides)
 
     variantB_outcomes_samples.append(list(t_sample))    ##### No changes needed, but investigate what the append function is doing here
     ##### Add lines here to update the remainder of the lists initilaized before this loop
+    reject_null_list.append(t_reject)
+    z_score_list.append(t_z_score)
+    p_value_list.append(t_p_value)
 
 print("For %d samples of optimal sample size %d, %3.2f%% rejected the null" % (num_samples, n_star, calc_proportion(reject_null_list)*100))
 
